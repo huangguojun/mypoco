@@ -22,13 +22,13 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Append our module directory to CMake
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
 if(CMAKE_VERSION VERSION_LESS "3.10")
-	list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/V39)
+	list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/V39)
 endif()
 if(CMAKE_VERSION VERSION_LESS "3.14")
-	list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/V313)
+	list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/V313)
 endif()
 #################################################################################
 # Setup C/C++ compiler options
@@ -340,11 +340,6 @@ endif()
 #NetSSL
 
 
-if(WIN32 AND EXISTS ${PROJECT_SOURCE_DIR}/NetSSL_Win AND ENABLE_NETSSL_WIN)
-	add_subdirectory(NetSSL_Win)
-	list(APPEND Poco_COMPONENTS "NetSSL_Win")
-endif(WIN32 AND EXISTS ${PROJECT_SOURCE_DIR}/NetSSL_Win AND ENABLE_NETSSL_WIN)
-
 if(OPENSSL_FOUND)
 	if(EXISTS ${PROJECT_SOURCE_DIR}/NetSSL_OpenSSL AND ENABLE_NETSSL)
 		add_subdirectory(NetSSL_OpenSSL)
@@ -406,7 +401,7 @@ endif()
 #############################################################
 # Uninstall stuff see: http://www.vtk.org/Wiki/CMake_FAQ
 configure_file(
-	"${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+	"${CMAKE_CURRENT_SOURCE_DIR}/CMake/cmake_uninstall.cmake.in"
 	"${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
 	IMMEDIATE @ONLY)
 
@@ -440,13 +435,10 @@ write_basic_package_version_file(
 # Set config script install location in a location that find_package() will
 # look for, which is different on MS Windows than for UNIX
 # Note: also set in POCO_GENERATE_PACKAGE macro in cmake/PocoMacros.cmake
-if(WIN32)
-	set(PocoConfigPackageLocation "cmake")
-else()
-	set(PocoConfigPackageLocation "lib${LIB_SUFFIX}/cmake/${PROJECT_NAME}")
-endif()
 
-configure_file(cmake/${PROJECT_NAME}Config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}Config.cmake" @ONLY)
+set(PocoConfigPackageLocation "lib${LIB_SUFFIX}/CMake/${PROJECT_NAME}")
+
+configure_file(CMake/${PROJECT_NAME}Config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}Config.cmake" @ONLY)
 install(
 	FILES
 		${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}Config.cmake
@@ -458,11 +450,11 @@ install(
 )
 
 if(POCO_UNBUNDLED)
-	install(FILES cmake/FindPCRE.cmake
+	install(FILES CMake/FindPCRE.cmake
 			DESTINATION "${PocoConfigPackageLocation}")
-	install(FILES cmake/V39/FindEXPAT.cmake
+	install(FILES CMake/V39/FindEXPAT.cmake
 			DESTINATION "${PocoConfigPackageLocation}/V39")
-	install(FILES cmake/V313/FindSQLite3.cmake
+	install(FILES CMake/V313/FindSQLite3.cmake
 			DESTINATION "${PocoConfigPackageLocation}/V313")
 endif()
 
